@@ -11,6 +11,7 @@
     "lint:fix": "eslint --fix \"src/**/*.{js,jsx,ts,tsx}\"",
     "prettier": "prettier --write \"src/**/*.{js,jsx,ts,tsx}\"",
     "preview": "vite preview"
+    
   },
   "dependencies": {
     "@fontsource/open-sans": "5.2.5",
