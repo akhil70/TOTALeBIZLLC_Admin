@@ -1,0 +1,97 @@
+/* Full container split layout */
+.login-container {
+    display: flex;
+    min-height: 100vh;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Left side with background image */
+.login-left {
+    flex: 1;
+    background: url("../../assets/images/background.webp") no-repeat center center/cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-align: center;
+    padding: 40px;
+    position: relative;
+}
+
+.login-left::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    /* overlay */
+}
+
+.welcome-text {
+    position: relative;
+    z-index: 1;
+    max-width: 450px;
+}
+
+.welcome-text h2 {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.welcome-text p {
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+/* Right side form */
+.login-right {
+    flex: 1;
+    background: #f7f7f7;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+}
+
+.login-box {
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+}
+
+.login-box h2 {
+    font-weight: 600;
+    margin-bottom: 25px;
+}
+
+.btn-login {
+    background: black;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.btn-login:hover {
+    background: #333;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .login-container {
+        flex-direction: column;
+    }
+
+    .login-left {
+        min-height: 250px;
+    }
+
+    .login-right {
+        padding: 20px;
+    }
+}

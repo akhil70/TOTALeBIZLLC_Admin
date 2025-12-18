@@ -1,0 +1,27 @@
+.glass-card {
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 16px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 20px;
+  border: 1px solid rgba(200, 200, 200, 0.2);
+}
+
+.custom-table tbody tr:hover {
+  background: rgba(72, 177, 191, 0.1);
+}
+
+.custom-pagination .page-item .page-link {
+  border-radius: 50% !important;
+  margin: 0 4px;
+  color: #48b1bf;
+  font-weight: 500;
+  border: none;
+}
+
+.custom-pagination .page-item.active .page-link {
+  background: linear-gradient(135deg, #06beb6, #48b1bf);
+  border-radius: 50%;
+  color: white;
+  box-shadow: 0 4px 10px rgba(72, 177, 191, 0.4);
+}
