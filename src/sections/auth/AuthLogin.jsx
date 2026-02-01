@@ -71,7 +71,6 @@ export default function AuthLoginForm({ className }) {
           localStorage.setItem("signupEmail", email);
           localStorage.setItem("role", role);
           navigate("/dashboard");
-          window.location.reload();
         } else {
           toast.error(response?.resultString || "Login failed");
 
@@ -176,7 +175,7 @@ export default function AuthLoginForm({ className }) {
 
 
   return (
-    
+
     <MainCard className="mb-0" >
       <div className="text-center">
         <Image src={DarkLogo} alt="img" />

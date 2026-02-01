@@ -2,8 +2,7 @@
 import axios from "axios";
 
 // Base API URL (your ngrok or deployed server)
-// const API_BASE_URL = "http://192.168.29.233:8081/api";
-const API_BASE_URL = "https://arbitration-conversations-colony-photography.trycloudflare.com/api";
+const API_BASE_URL = "https://api.totalebiz.net/api";
 
 // Create axios instance
 const api = axios.create({
@@ -403,22 +402,22 @@ export const uploadProfilePicture = async (file) => {
       new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result.split(",")[1]); 
+        reader.onload = () => resolve(reader.result.split(",")[1]);
         reader.onerror = (error) => reject(error);
       });
 
     const base64Data = await toBase64(file);
 
-   const payload = {
-  sourceType: "WEB",
-  payLoad: {
-    fileName: file.name,
-    fileSize: file.size,
-    fileType: file.name.split(".").pop().toUpperCase(), // "JPG" | "JPEG" | "PNG"
-    data: base64Data,
-  },
-  valid: true,
-};
+    const payload = {
+      sourceType: "WEB",
+      payLoad: {
+        fileName: file.name,
+        fileSize: file.size,
+        fileType: file.name.split(".").pop().toUpperCase(), // "JPG" | "JPEG" | "PNG"
+        data: base64Data,
+      },
+      valid: true,
+    };
 
     const response = await api.post("/users/upload/profile-picture", payload, {
       headers: {
@@ -442,10 +441,10 @@ export const fetchProfilePicture = async (fileName) => {
       headers: {
         Authorization: `Bearer ${token}`,
       },
-      responseType: "blob", 
+      responseType: "blob",
     });
 
-    return URL.createObjectURL(response.data); 
+    return URL.createObjectURL(response.data);
   } catch (error) {
     console.error("Error fetching profile picture:", error);
     return null;
