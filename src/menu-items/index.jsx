@@ -16,22 +16,17 @@ import UserApplicationMenu from './UserApplicationMenu';
 // ==============================|| MENU ITEMS ||============================== //
 
 // Get role from localStorage
-const role = localStorage.getItem("role");
-
-let items = [];
-
-// Role-based menu
-if (role === "ADMIN") {
-  items = [navigation, UsersMenu, RequirmentMenu,DepartmentMenu];
-} else if (role === "USER") {
-  items = [navigation, UserJobsMenu, UserApplicationMenu];
-} else {
-  // default/fallback if no role
-  items = [navigation];
-}
-
 const menuItems = {
-  items
+  get items() {
+    const role = localStorage.getItem("role");
+    if (role === "ADMIN") {
+      return [navigation, UsersMenu, RequirmentMenu, DepartmentMenu];
+    } else if (role === "USER") {
+      return [navigation, UserJobsMenu, UserApplicationMenu];
+    } else {
+      return [navigation];
+    }
+  }
 };
 
 export default menuItems;
