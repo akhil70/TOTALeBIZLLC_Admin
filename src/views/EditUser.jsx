@@ -1,16 +1,19 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import MainCard from "components/MainCard";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import { useNavigate } from "react-router-dom";
-import { registerUser } from "../utils/ApiService";
+import { useNavigate, useLocation } from "react-router-dom";
+import { updateUser } from "../utils/ApiService";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-export default function AddNewUser() {
+export default function EditUser() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const userData = location.state?.user;
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -18,11 +21,32 @@ export default function AddNewUser() {
     email: "",
     phone: "",
     role: "",
-    password: "",
     gender: "",
     dob: "",
     address: ""
   });
+
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  useEffect(() => {
+    if (!userData) {
+      toast.error("No user data found");
+      navigate("/users");
+      return;
+    }
+
+    setFormData({
+      firstName: userData.firstName || "",
+      lastName: userData.lastName || "",
+      userName: userData.userName || "",
+      email: userData.emailId || "",
+      phone: userData.phoneNumber || "",
+      role: userData.role || "",
+      gender: userData.gender || "",
+      dob: userData.dob || "",
+      address: userData.address || ""
+    });
+  }, [userData, navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -33,41 +57,38 @@ export default function AddNewUser() {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  const payLoad = {
-    firstName: formData.firstName,
-    lastName: formData.lastName,
-    emailId: formData.email,
-    password: formData.password,
-    userName: formData.userName,
-    role: formData.role,
-    address: formData.address,
-    gender: formData.gender || "NA",
-    dob: formData.dob,
-    phoneNumber: formData.phone,
-    countryCode: "",
-    otp: 0
+    const payLoad = {
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      emailId: formData.email,
+      userName: formData.userName,
+      role: formData.role,
+      address: formData.address,
+      gender: formData.gender || "NA",
+      dob: formData.dob,
+      phoneNumber: formData.phone,
+    };
+
+    setIsUpdating(true);
+    try {
+      await updateUser(userData.id, { payLoad });
+      toast.success("User updated successfully!");
+      navigate("/users");
+    } catch (error) {
+      toast.error("Failed to update user. Please try again.");
+      setIsUpdating(false);
+    }
   };
-
-  try {
-    const res = await registerUser({ payLoad }); // 👈 wrap payload
-    toast.success("User registered successfully!");
-    navigate("/users");
-  } catch (error) {
-    toast.error("Failed to register user. Please try again.");
-  }
-};
-
 
   return (
     <Row>
       <Col xl={12}>
-        <MainCard title="Add New User">
+        <MainCard title="Edit User">
           <Form onSubmit={handleSubmit}>
             <Row>
               <Col md={6} xs={12}>
-                {/* First Name */}
                 <Form.Group className="mb-3">
                   <Form.Label>First Name</Form.Label>
                   <Form.Control
@@ -80,7 +101,6 @@ export default function AddNewUser() {
                   />
                 </Form.Group>
 
-                {/* Last Name */}
                 <Form.Group className="mb-3">
                   <Form.Label>Last Name</Form.Label>
                   <Form.Control
@@ -89,11 +109,9 @@ export default function AddNewUser() {
                     placeholder="Enter Last Name"
                     value={formData.lastName}
                     onChange={handleChange}
-
                   />
                 </Form.Group>
 
-                {/* User Name */}
                 <Form.Group className="mb-3">
                   <Form.Label>User Name</Form.Label>
                   <Form.Control
@@ -106,7 +124,6 @@ export default function AddNewUser() {
                   />
                 </Form.Group>
 
-                {/* Email */}
                 <Form.Group className="mb-3">
                   <Form.Label>Email Address</Form.Label>
                   <Form.Control
@@ -119,7 +136,6 @@ export default function AddNewUser() {
                   />
                 </Form.Group>
 
-                {/* Phone */}
                 <Form.Group className="mb-3">
                   <Form.Label>Phone Number</Form.Label>
                   <Form.Control
@@ -134,7 +150,6 @@ export default function AddNewUser() {
               </Col>
 
               <Col md={6} xs={12}>
-                {/* Role */}
                 <Form.Group className="mb-3">
                   <Form.Label>Portal Role</Form.Label>
                   <Form.Select
@@ -150,7 +165,6 @@ export default function AddNewUser() {
                   </Form.Select>
                 </Form.Group>
 
-                {/* Gender */}
                 <Form.Group className="mb-3">
                   <Form.Label>Gender</Form.Label>
                   <Form.Select
@@ -165,7 +179,6 @@ export default function AddNewUser() {
                   </Form.Select>
                 </Form.Group>
 
-                {/* DOB */}
                 <Form.Group className="mb-3">
                   <Form.Label>Date of Birth</Form.Label>
                   <Form.Control
@@ -176,20 +189,6 @@ export default function AddNewUser() {
                   />
                 </Form.Group>
 
-                {/* Password */}
-                <Form.Group className="mb-3">
-                  <Form.Label>Set Password</Form.Label>
-                  <Form.Control
-                    type="password"
-                    name="password"
-                    placeholder="Enter Password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    required
-                  />
-                </Form.Group>
-
-                {/* Address */}
                 <Form.Group className="mb-3">
                   <Form.Label>Address</Form.Label>
                   <Form.Control
@@ -208,11 +207,12 @@ export default function AddNewUser() {
                   variant="secondary"
                   className="me-2 mb-2 mb-md-0"
                   onClick={() => navigate("/users")}
+                  disabled={isUpdating}
                 >
                   Cancel
                 </Button>
-                <Button type="submit" variant="primary">
-                  Register User
+                <Button type="submit" variant="primary" disabled={isUpdating}>
+                  {isUpdating ? "Updating..." : "Update User"}
                 </Button>
               </Col>
             </Row>

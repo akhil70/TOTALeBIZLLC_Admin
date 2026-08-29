@@ -7,7 +7,7 @@ import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
 import Pagination from "react-bootstrap/Pagination";
 import { useNavigate } from "react-router-dom";
-import { getUsers } from "../utils/ApiService";
+import { getUsers, deleteUser } from "../utils/ApiService";
 
 export default function UsersPage() {
   const navigate = useNavigate();
@@ -46,16 +46,28 @@ export default function UsersPage() {
     }
   };
 
+  const handleDeleteUser = async (userId) => {
+    if (!window.confirm("Are you sure you want to delete this user?")) return;
+
+    try {
+      await deleteUser(userId);
+      // Filter out deleted user from list
+      setUsers((prev) => prev.filter((user) => user.id !== userId));
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      alert("Failed to delete user. Please try again.");
+    }
+  };
+
   return (
     <Row>
       <Col xl={12}>
         <MainCard>
-          <div className="d-flex justify-content-end align-items-center mb-3 gap-2">
+          <div className="search-filter-wrapper mb-3">
             <input
               type="text"
               placeholder="Search user..."
               className="form-control"
-              style={{ width: "250px" }}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
@@ -84,6 +96,7 @@ export default function UsersPage() {
                     <th>Role</th>
                     <th>Phone Number</th>
                     <th>Address</th>
+                    <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -98,6 +111,28 @@ export default function UsersPage() {
                         <td>{user.role}</td>
                         <td>{user.phoneNumber || "-"}</td>
                         <td>{user.address || "-"}</td>
+                        <td style={{ textAlign: "center", display: "flex", gap: "12px", justifyContent: "center" }}>
+                          <i
+                            className="ph ph-pencil"
+                            style={{
+                              fontSize: "18px",
+                              cursor: "pointer",
+                              color: "#28a745",
+                            }}
+                            onClick={() => navigate("/users/edit", { state: { user } })}
+                            title="Edit User"
+                          ></i>
+                          <i
+                            className="ph ph-trash"
+                            style={{
+                              fontSize: "18px",
+                              cursor: "pointer",
+                              color: "#dc3545",
+                            }}
+                            onClick={() => handleDeleteUser(user.id)}
+                            title="Delete User"
+                          ></i>
+                        </td>
                       </tr>
                     ))
                   ) : (

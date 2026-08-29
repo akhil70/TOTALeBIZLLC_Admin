@@ -71,6 +71,7 @@ function ApplicantsForJob() {
     };
 
     const renderTable = (data) => (
+        <div className="table-responsive">
         <table className="table table-striped">
             <thead>
                 <tr>
@@ -124,6 +125,7 @@ function ApplicantsForJob() {
                 )}
             </tbody>
         </table>
+        </div>
     );
 
     return (

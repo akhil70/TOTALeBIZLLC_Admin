@@ -61,6 +61,7 @@ function UserApplicationStatus() {
                 {loading ? (
                   <p>Loading {activeTab} applicants...</p>
                 ) : applicants.length > 0 ? (
+                  <div className="table-responsive">
                   <table className="table table-striped">
                     <thead>
                       <tr>
@@ -101,6 +102,7 @@ function UserApplicationStatus() {
                       ))}
                     </tbody>
                   </table>
+                  </div>
                 ) : (
                   <p>No {activeTab.toLowerCase()} applicants found.</p>
                 )}

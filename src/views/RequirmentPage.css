@@ -6,3 +6,10 @@
 .job-details-popup strong {
   color: #333;
 }
+
+.job-details-popup .badge {
+  display: inline-block;
+  word-break: break-word;
+  max-width: 100%;
+  white-space: normal;
+}

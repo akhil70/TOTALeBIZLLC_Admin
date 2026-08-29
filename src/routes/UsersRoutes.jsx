@@ -9,6 +9,7 @@ import DashboardLayout from 'layout/Dashboard';
 // ✅ CORRECT - adjust path to actual file location
 const UsersPage = Loadable(lazy(() => import('views/UsersPage')));
 const AddNewUser = Loadable(lazy(() => import('views/AddNewUser')));
+const EditUser = Loadable(lazy(() => import('views/EditUser')));
 
 // ==============================|| USERS ROUTING ||============================== //
 const UsersRoutes = {
@@ -22,6 +23,10 @@ const UsersRoutes = {
     {
       path: 'users/add',
       element: <AddNewUser />
+    },
+    {
+      path: 'users/edit',
+      element: <EditUser />
     }
   ]
 };

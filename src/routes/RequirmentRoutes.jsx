@@ -8,7 +8,8 @@ import DashboardLayout from 'layout/Dashboard';
 // render - user page
 // ✅ CORRECT - adjust path to actual file location
 const RequirmentPage = Loadable(lazy(() => import('views/RequirmentPage')));
-const AddNewRequirement = Loadable(lazy(() => import('views/NewRequirment'))); 
+const AddNewRequirement = Loadable(lazy(() => import('views/NewRequirment')));
+const EditRequirement = Loadable(lazy(() => import('views/EditRequirment')));
 const ApplicantsForJob = Loadable(lazy(() => import('views/ApplicantsForJob')));
 
 // ==============================|| USERS ROUTING ||============================== //
@@ -23,8 +24,11 @@ const RequirmentRoutes = {
     {
       path: 'Requirment/add',
       element: <AddNewRequirement />
-    }
-    ,
+    },
+    {
+      path: 'Requirment/edit',
+      element: <EditRequirement />
+    },
     {
       path: 'Requirment/Applicants',
       element: <ApplicantsForJob />

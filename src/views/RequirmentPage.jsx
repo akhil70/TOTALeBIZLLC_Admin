@@ -72,12 +72,11 @@ export default function RequirementPage() {
       <Col xl={12}>
         <MainCard title="Job Requirements">
           {/* Search and Add */}
-          <div className="d-flex justify-content-end align-items-center mb-3 gap-2">
+          <div className="search-filter-wrapper mb-3">
             <input
               type="text"
               placeholder="Search job..."
               className="form-control"
-              style={{ width: "250px" }}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
@@ -138,7 +137,7 @@ export default function RequirementPage() {
                         }}
                       ></i>
                     </td>
-                    <td style={{ textAlign: "center" }}>
+                    <td style={{ textAlign: "center", display: "flex", gap: "12px", justifyContent: "center" }}>
                       <i
                         className="ph ph-eye"
                         style={{
@@ -147,17 +146,29 @@ export default function RequirementPage() {
                           color: "#007bff",
                         }}
                         onClick={() => handleViewDetails(job)}
+                        title="View Details"
+                      ></i>
+                      <i
+                        className="ph ph-pencil"
+                        style={{
+                          fontSize: "18px",
+                          cursor: "pointer",
+                          color: "#28a745",
+                        }}
+                        onClick={() => navigate("/Requirment/edit", { state: { job } })}
+                        title="Edit Job"
+                      ></i>
+                      <i
+                        className="ph ph-trash"
+                        style={{
+                          fontSize: "18px",
+                          cursor: "pointer",
+                          color: "#dc3545",
+                        }}
+                        onClick={() => handleDelete(job.id)}
+                        title="Delete Job"
                       ></i>
                     </td>
-                    {/* <td> <i
-                      className="ph ph-trash"
-                      style={{
-                        fontSize: "18px",
-                        cursor: "pointer",
-                        color: "#dc3545",
-                      }}
-                      onClick={() => handleDelete(job.id)}
-                    ></i></td> */}
                   </tr>
                 ))
               ) : (
@@ -241,9 +252,9 @@ export default function RequirementPage() {
 
               <div className="mb-3">
                 <strong>Skills Required:</strong>
-                <div className="mt-1 d-flex flex-wrap gap-1">
+                <div className="mt-1 d-flex flex-wrap gap-2" style={{ overflowWrap: "break-word" }}>
                   {selectedJob.skills.split(",").map((skill, index) => (
-                    <span key={index} className="badge bg-warning text-dark">
+                    <span key={index} className="badge bg-warning text-dark" style={{ whiteSpace: "normal" }}>
                       {skill.trim()}
                     </span>
                   ))}

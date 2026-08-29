@@ -42,10 +42,18 @@ export default function MainDrawer() {
   return (
     <nav id="pc-sidebar" className={`pc-sidebar ${drawerOpen ? 'pc-sidebar-hide mob-sidebar-active' : ''} `}>
       <div className="navbar-wrapper">
-        <div className="m-header">
+        <div className="m-header d-flex justify-content-between align-items-center">
           <a className="b-brand text-primary">
             <Image src={logo} style={{width:"120px",paddingLeft:"55px"}} fluid className="logo logo-lg" alt="logo" />
           </a>
+          <button
+            className="btn btn-link d-lg-none"
+            onClick={() => handlerDrawerOpen(false)}
+            style={{ color: '#666', padding: '0.5rem', marginRight: '0.5rem' }}
+            title="Close Menu"
+          >
+            <i className="ph ph-x" style={{ fontSize: '1.5rem' }} />
+          </button>
           {/* <h5 style={{padding:"26px"}}>Admin Portal</h5> */}
         </div>
 

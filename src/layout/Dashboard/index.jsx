@@ -6,10 +6,13 @@ import Drawer from './Drawer';
 import Footer from './Footer';
 import Header from './Header';
 import NavigationScroll from 'components/NavigationScroll';
+import { useInactivityLogout } from 'hooks/useInactivityLogout';
 
 // ==============================|| MAIN LAYOUT ||============================== //
 
 export default function MainLayout() {
+  useInactivityLogout();
+
   return (
     <div>
       <Drawer />

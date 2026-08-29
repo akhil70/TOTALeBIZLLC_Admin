@@ -138,6 +138,36 @@ export const registerUser = async (userData) => {
   }
 };
 
+export const deleteUser = async (userId) => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await api.delete(`/users/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    throw error;
+  }
+};
+
+export const updateUser = async (userId, userData) => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await api.put(`/users/${userId}`, userData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error updating user:", error);
+    throw error;
+  }
+};
+
 export const verifyRegisterOtp = async (emailId, otp) => {
   try {
     const response = await api.post(
@@ -202,8 +232,6 @@ export const sendRegisterOtp = async (emailId) => {
 
 // Fetch job details
 export const getJobDetails = async ({ page = 0, size = 20, search = "" }) => {
-  console.log("nmidn");
-
   try {
     const token = localStorage.getItem("token");
     const response = await api.get("/job-details", {
@@ -352,6 +380,21 @@ export const createJobDetail = async (jobData) => {
     return response.data;
   } catch (error) {
     console.error("Error creating job:", error);
+    throw error;
+  }
+};
+
+export const updateJobDetail = async (jobId, jobData) => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await api.put(`/job-details/${jobId}`, jobData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error updating job:", error);
     throw error;
   }
 };

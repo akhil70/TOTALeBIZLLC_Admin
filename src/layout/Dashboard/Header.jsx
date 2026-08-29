@@ -18,6 +18,9 @@ import {
   changePassword,
 } from 'utils/ApiService';
 
+// Menu imports
+import { handlerDrawerOpen, useGetMenuMaster } from 'api/menu';
+
 // fallback image
 import Img2 from 'assets/images/user/avatar-2.png';
 
@@ -126,11 +129,23 @@ export default function Header() {
     }
   };
 
+  const { menuMaster } = useGetMenuMaster();
+
   return (
     <>
       <header className="pc-header">
-        <div className="header-wrapper">
-          <div className="ms-auto">
+        <div className="header-wrapper" style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+          <div className="d-flex align-items-center gap-2">
+            <button
+              className="btn btn-link d-lg-none"
+              onClick={() => handlerDrawerOpen(!menuMaster?.isDashboardDrawerOpened)}
+              style={{ color: '#666', padding: '0.5rem' }}
+              title="Toggle Menu"
+            >
+              <i className="ph ph-list" style={{ fontSize: '1.5rem' }} />
+            </button>
+          </div>
+          <div className="ms-auto" style={{ display: 'flex', alignItems: 'center' }}>
             <Nav className="list-unstyled">
               <Dropdown className="pc-h-item" align="end">
                 <Dropdown.Toggle

@@ -4,14 +4,16 @@ import Row from "react-bootstrap/Row";
 import MainCard from "components/MainCard";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import { useNavigate } from "react-router-dom";
-import { createJobDetail } from "../utils/ApiService";
-import { getDepartments } from "../utils/ApiService";
+import { useNavigate, useLocation } from "react-router-dom";
+import { getDepartments, updateJobDetail } from "../utils/ApiService";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+export default function EditRequirment() {
+    const navigate = useNavigate();
+    const location = useLocation();
+    const jobData = location.state?.job;
 
-export default function NewRequirment() {
     const [formData, setFormData] = useState({
         jobTitle: "",
         departmentId: "",
@@ -26,8 +28,43 @@ export default function NewRequirment() {
         publishSite: false,
     });
 
-    const navigate = useNavigate();
     const [departments, setDepartments] = useState([]);
+    const [isUpdating, setIsUpdating] = useState(false);
+
+    useEffect(() => {
+        if (!jobData) {
+            toast.error("No job data found");
+            navigate("/Requirment");
+            return;
+        }
+
+        const fetchDepartments = async () => {
+            try {
+                const res = await getDepartments();
+                const depts = res?.payLoad || [];
+                setDepartments(depts);
+
+                setFormData({
+                    jobTitle: jobData.jobTitle || "",
+                    departmentId: jobData.departmentId || "",
+                    vacancies: jobData.vacancyCount || "",
+                    experience: jobData.experienceRequired || "",
+                    jobType: jobData.jobType?.toLowerCase() || "",
+                    location: jobData.location || "",
+                    salary: jobData.salaryRange || "",
+                    skills: jobData.skills || "",
+                    description: jobData.jobDescription || "",
+                    expiryDate: jobData.expiryDate ? jobData.expiryDate.split("T")[0] : "",
+                    publishSite: jobData.publishSite || false,
+                });
+            } catch (err) {
+                console.error("Failed to load departments", err);
+            }
+        };
+
+        fetchDepartments();
+    }, [jobData, navigate]);
+
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
         setFormData((prev) => ({
@@ -35,52 +72,41 @@ export default function NewRequirment() {
             [name]: type === "checkbox" ? checked : value,
         }));
     };
-    useEffect(() => {
-        const fetchDepartments = async () => {
-            try {
-                const res = await getDepartments();
-                setDepartments(res?.payLoad || []);
-            } catch (err) {
-                console.error("Failed to load departments", err);
-            }
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        const payLoad = {
+            jobTitle: formData.jobTitle,
+            location: formData.location,
+            departmentId: parseInt(formData.departmentId, 10) || 0,
+            salaryRange: formData.salary,
+            vacancyCount: parseInt(formData.vacancies, 10) || 0,
+            skills: formData.skills,
+            experienceRequired: formData.experience,
+            jobDescription: formData.description,
+            jobType: formData.jobType.toUpperCase(),
+            publishSite: formData.publishSite,
+            expiryDate: formData.expiryDate
+                ? new Date(formData.expiryDate).toISOString()
+                : null,
         };
 
-        fetchDepartments();
-    }, []);
-
-   const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const payLoad = {
-        jobTitle: formData.jobTitle,
-        location: formData.location,
-        departmentId: parseInt(formData.departmentId, 10) || 0,
-        salaryRange: formData.salary,
-        vacancyCount: parseInt(formData.vacancies, 10) || 0,
-        skills: formData.skills,
-        experienceRequired: formData.experience,
-        jobDescription: formData.description,
-        jobType: formData.jobType.toUpperCase(),
-        publishSite: formData.publishSite,
-        expiryDate: formData.expiryDate
-            ? new Date(formData.expiryDate).toISOString()
-            : null,
+        setIsUpdating(true);
+        try {
+            await updateJobDetail(jobData.id, { payLoad });
+            toast.success("Job updated successfully!");
+            navigate("/Requirment");
+        } catch (error) {
+            toast.error("Failed to update job. Please try again.");
+            setIsUpdating(false);
+        }
     };
-
-    try {
-        await createJobDetail({ payLoad });
-        toast.success("Job posted successfully!");
-        navigate("/Requirment");
-    } catch (error) {
-        toast.error("Failed to post job. Please try again.");
-    }
-};
-
 
     return (
         <Row>
             <Col xl={12}>
-                <MainCard title="Add New Job Requirement">
+                <MainCard title="Edit Job Requirement">
                     <Form onSubmit={handleSubmit}>
                         <Row>
                             <Col md={6} xs={12}>
@@ -112,7 +138,6 @@ export default function NewRequirment() {
                                         ))}
                                     </Form.Select>
                                 </Form.Group>
-
 
                                 <Form.Group className="mb-3">
                                     <Form.Label>Number of Vacancies</Form.Label>
@@ -147,9 +172,9 @@ export default function NewRequirment() {
                                         required
                                     >
                                         <option value="">Select Type</option>
-                                        <option value="FULL_TIME">Full-Time</option>
-                                        <option value="PART_TIME">Part-Time</option>
-                                        <option value="CONTRACT">Contract</option>
+                                        <option value="full_time">Full-Time</option>
+                                        <option value="part_time">Part-Time</option>
+                                        <option value="contract">Contract</option>
                                     </Form.Select>
                                 </Form.Group>
 
@@ -235,7 +260,6 @@ export default function NewRequirment() {
                                         value={formData.expiryDate}
                                         onChange={handleChange}
                                         required
-                                        min={new Date().toISOString().split("T")[0]}
                                     />
                                 </Form.Group>
                             </Col>
@@ -245,11 +269,12 @@ export default function NewRequirment() {
                                     onClick={() => navigate("/Requirment")}
                                     variant="secondary"
                                     className="me-2 mb-2 mb-md-0"
+                                    disabled={isUpdating}
                                 >
                                     Cancel
                                 </Button>
-                                <Button type="submit" variant="primary">
-                                    Post Job
+                                <Button type="submit" variant="primary" disabled={isUpdating}>
+                                    {isUpdating ? "Updating..." : "Update Job"}
                                 </Button>
                             </Col>
                         </Row>
